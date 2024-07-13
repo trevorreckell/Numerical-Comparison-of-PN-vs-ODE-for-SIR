@@ -709,8 +709,8 @@ title(h, 'RRMSE (%)');
 MSE_s
 MSE_i
 MSE_r
+%save all variables
 save(strcat(num2str(timidivi),'paramsb.mat'))
-ode_run_counter=ode_run_counter+1;
 
 end %end of section 2
 
@@ -2215,7 +2215,7 @@ while le(Number_of_iterations, MAX_ITERATIONS)
 end
 end
 
-%save values of standard+residual run
+%store values of standard+residual run
 MS_ER=MSusceptible;
 MI_ER=MInfected;
 MR_ER=MRecovered;
