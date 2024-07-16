@@ -49,7 +49,8 @@ Run_Section=1;
 if Run_Section==1
 
 timidivi=20;                    %tau in paper
-delta=1; beta=1; gamma=1;       %parameter values 
+delta=0.2; beta=0.02; gamma=0.1;       %parameter values 
+%delta=0.1; beta=0.2; gamma=0.3;
 
 try
 delta_T=delta/timidivi;         %parameters scaled for tau value
@@ -84,13 +85,11 @@ while le(Number_of_iterations, MAX_ITERATIONS)
     %method
     if beta_T==0 || m0Infected==0
         global_info.pSus_tInf = zero;
-        pSus_tInf_resEr=(beta_T * m0Susceptible *  m0Infected + pSus_tInf_resEr)-round(beta_T * m0Susceptible * m0Infected + pSus_tInf_resEr);
         global_info.tInf_pInf = zero;
-        tInf_pInf_resEr=(beta_T * m0Susceptible *  m0Infected+tInf_pInf_resEr)-round(beta_T * m0Susceptible * m0Infected + tInf_pInf_resEr);
     elseif m0Infected<=(1/(beta_T))
-        global_info.pSus_tInf = round(beta_T * m0Susceptible *   m0Infected +pSus_tInf_resEr);
+        global_info.pSus_tInf = round(beta_T * m0Susceptible * m0Infected +pSus_tInf_resEr);
         pSus_tInf_resEr=(beta_T * m0Susceptible *   m0Infected +pSus_tInf_resEr)-round(beta_T * m0Susceptible * m0Infected + pSus_tInf_resEr);
-        global_info.tInf_pInf = round(beta_T * m0Susceptible *   m0Infected + tInf_pInf_resEr);
+        global_info.tInf_pInf = round(beta_T * m0Susceptible * m0Infected + tInf_pInf_resEr);
         tInf_pInf_resEr=(beta_T * m0Susceptible *   m0Infected +tInf_pInf_resEr)-round(beta_T * m0Susceptible * m0Infected + tInf_pInf_resEr);
     else 
         beta2=1/(m0Infected+1);
@@ -98,7 +97,7 @@ while le(Number_of_iterations, MAX_ITERATIONS)
         pSus_tInf_resEr=(beta2 * m0Susceptible * m0Infected +pSus_tInf_resEr)-round(beta2 * m0Susceptible * m0Infected +pSus_tInf_resEr);
         global_info.tInf_pInf = round(beta2 * m0Susceptible * m0Infected +tInf_pInf_resEr);
         tInf_pInf_resEr=(beta2 * m0Susceptible * m0Infected +tInf_pInf_resEr)-round(beta2 * m0Susceptible * m0Infected +tInf_pInf_resEr);
-    
+        
     end
 
     global_info.pInf_tRec = round(gamma_T * (m0Infected) + pInf_tRec_resEr);
@@ -114,7 +113,7 @@ while le(Number_of_iterations, MAX_ITERATIONS)
     dyn.ft=1/timidivi;
     dyn.m0 = {'pSusceptible', m0Susceptible,...
           'pInfected', m0Infected, ...
-          'pRecovered', m0Recovered};
+          'pRecovered', m0Infected};
     pni = initialdynamics(pns, dyn); 
     Sim_Results = gpensim(pni); % perform simulation runs
     
@@ -124,9 +123,9 @@ while le(Number_of_iterations, MAX_ITERATIONS)
     m0Recovered = ntokens('pRecovered');
     Number_of_iterations = Number_of_iterations + 1;
 end
-catch
+catch %tries with pn model again with slightly different parameter value if there is an error
 
-    disp(['Error at delta=', int2str(delta), ' , gamma=',int2str(gamma), ' , beta=',int2str(beta), ' , timesteps=',int2str(timidivi)]);
+    disp(['Error at delta=', num2str(delta), ' , gamma=',num2str(gamma), ' , beta=',num2str(beta), ' , timesteps=',num2str(timidivi)]);
     
     if delta==0
     delta=delta; 
@@ -182,23 +181,19 @@ while le(Number_of_iterations, MAX_ITERATIONS)
     %method
     if beta_T==0 || m0Infected==0
         global_info.pSus_tInf = zero;
-        pSus_tInf_resEr=(beta_T * m0Susceptible *  m0Infected + pSus_tInf_resEr)-round(beta_T * m0Susceptible * m0Infected + pSus_tInf_resEr);
         global_info.tInf_pInf = zero;
-        tInf_pInf_resEr=(beta_T * m0Susceptible *  m0Infected+tInf_pInf_resEr)-round(beta_T * m0Susceptible * m0Infected + tInf_pInf_resEr);
     elseif m0Infected<=(1/(beta_T))
-        global_info.pSus_tInf = round(beta_T * m0Susceptible *   m0Infected +pSus_tInf_resEr);
+        global_info.pSus_tInf = round(beta_T * m0Susceptible * m0Infected +pSus_tInf_resEr);
         pSus_tInf_resEr=(beta_T * m0Susceptible *   m0Infected +pSus_tInf_resEr)-round(beta_T * m0Susceptible * m0Infected + pSus_tInf_resEr);
-        global_info.tInf_pInf = round(beta_T * m0Susceptible *   m0Infected + tInf_pInf_resEr);
+        global_info.tInf_pInf = round(beta_T * m0Susceptible * m0Infected + tInf_pInf_resEr);
         tInf_pInf_resEr=(beta_T * m0Susceptible *   m0Infected +tInf_pInf_resEr)-round(beta_T * m0Susceptible * m0Infected + tInf_pInf_resEr);
     else 
-
-        %beta2=(1/(m0Infected+??????));
         beta2=1/(m0Infected+1);
         global_info.pSus_tInf = round(beta2 * m0Susceptible * m0Infected + pSus_tInf_resEr);
         pSus_tInf_resEr=(beta2 * m0Susceptible * m0Infected +pSus_tInf_resEr)-round(beta2 * m0Susceptible * m0Infected +pSus_tInf_resEr);
         global_info.tInf_pInf = round(beta2 * m0Susceptible * m0Infected +tInf_pInf_resEr);
         tInf_pInf_resEr=(beta2 * m0Susceptible * m0Infected +tInf_pInf_resEr)-round(beta2 * m0Susceptible * m0Infected +tInf_pInf_resEr);
-    
+        
     end
 
     global_info.pInf_tRec = round(gamma_T * (m0Infected) + pInf_tRec_resEr);
@@ -210,7 +205,7 @@ while le(Number_of_iterations, MAX_ITERATIONS)
     global_info.tSus_pSus = round(delta_T * (m0Recovered) + tSus_pSus_resEr);
     tSus_pSus_resEr=(delta_T * (m0Recovered)+ tSus_pSus_resEr)-round(delta_T * (m0Recovered) + tSus_pSus_resEr);
     
-
+    
     pns = pnstruct('simple_pn_SIRv1_pdf');
     %dyn.ft=1/timidivi;
     dyn.m0 = {'pSusceptible', m0Susceptible,...
@@ -233,7 +228,13 @@ delta_ODE=delta;
 beta_ODE=beta; 
 gamma_ODE=gamma;
 params=[delta_ODE;beta_ODE;gamma_ODE];
-[t,y]=ode15s(@SIR,[1:1:(MAX_ITERATIONS/timidivi)],y0,[],params);    %ODE model run
+%[t,y]=ode15s(@SIR,[1:1:(MAX_ITERATIONS/timidivi)],y0,[],params);    %ODE model run
+[t,y]=ode89(@SIR,[1:1:(MAX_ITERATIONS/timidivi)],y0,[],params);
+
+% RRMSE Calculation
+ err_S = (rmse(MSusceptible(1:timidivi:MAX_ITERATIONS) , y(:,1)')/sqrt(sumsqr(y(:,1)')))*100;
+ err_I = (rmse(MInfected(1:timidivi:MAX_ITERATIONS) , y(:,2)')/sqrt(sumsqr( y(:,2)')))*100;
+ err_R = (rmse(MRecovered(1:timidivi:MAX_ITERATIONS) , y(:,3)')/sqrt(sumsqr(y(:,3)')))*100;
 
 % Plot Results
 figure()
@@ -248,8 +249,9 @@ plot(t,y(:,3), 'k','LineWidth',2);
 legend('Susceptible_{PN}','Infected_{PN}','Recovered_{PN}',...
     'Susceptible_{ODE}','Infected_{ODE}','Recovered_{ODE}');
 title("SIR Petri Net vs ODE", 'FontSize', 24)
-subtitle("beta="+beta*timidivi+', gamma='+gamma*timidivi+' delta='+delta*timidivi+", Susc. MSE="+err_S...
+subtitle("beta="+beta+', gamma='+gamma+' delta='+delta+", Susc. MSE="+err_S...
    +", Infe. MSE="+err_I+", Reco. MSE="+err_R, 'FontSize', 14)
+ylabel('Tokens (population)'); xlabel('Time'); 
 hold off
 
 end %end of section 1
