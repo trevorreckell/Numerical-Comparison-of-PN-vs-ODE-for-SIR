@@ -6,7 +6,7 @@
 %% Descrtiption and Directions
 % First, choose section to run by changing Run_Section to desired number.
 % Then go to section and change variables listed in description to desired
-% level. Hitting command+G on mac will skip between each section.
+% level. With Run_Section in find, hitting command+G on mac will skip between each section.
 % 1 = run basic SIRS PN model with 1 set of parameters and ode set to same parameters
     % beta, gamma, delta, tau (called timidivi, time steps per unit time),
     % Initial Conditions, a total time for simulations are what are params
